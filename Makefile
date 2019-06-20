@@ -1,16 +1,16 @@
-MAIN_SRC = main.cpp \
-	   window.cpp
+MAIN_SRC = emu/main.cpp \
+	   emu/window.cpp
 
-GB_SRC = gb/z80.cpp \
-	 gb/bus.cpp \
-	 gb/rom/rom.cpp \
-	 gb/gb.cpp \
-	 gb/lcd.cpp \
-	 gb/debug.cpp \
-	 gb/devices.cpp \
-	 gb/joypad.cpp \
-	 gb/rom/mbc1.cpp \
-	 gb/rom/mbc3.cpp
+GB_SRC = emu/gb/z80.cpp \
+	 emu/gb/bus.cpp \
+	 emu/gb/rom/rom.cpp \
+	 emu/gb/gb.cpp \
+	 emu/gb/lcd.cpp \
+	 emu/gb/debug.cpp \
+	 emu/gb/devices.cpp \
+	 emu/gb/joypad.cpp \
+	 emu/gb/rom/mbc1.cpp \
+	 emu/gb/rom/mbc3.cpp
 
 MAIN_OBJ = $(addprefix obj/,$(MAIN_SRC:.cpp=.o))
 GB_OBJ = $(addprefix obj/, $(GB_SRC:.cpp=.o))
@@ -34,6 +34,7 @@ debug:
 
 gb: $(MAIN_OBJ) $(GB_OBJ)
 	$(CXX) $(CXXFLAGS) $(DEBUG_OFF) $(SDLFLAGS) $^ -o $@
+
 
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)
