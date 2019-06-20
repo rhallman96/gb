@@ -30,17 +30,11 @@ private:
      * the save file.
      */
     void loadSave( void );
-
-    /**
-     * Sets the RAM size based on the cartridge header.
-     */
-    void setRAMSize( void );
-    
-    // RAM data
-    uint8_t* mp_ramArray;
-    int m_ramSize;
-    uint8_t m_ramBankNum;
     
     // the rom and ram bank numbers
     uint8_t m_romBankNum;
+    uint8_t m_ramBankNum;
+
+    // RAM enabled flag
+    bool m_ramEnabled;
 };

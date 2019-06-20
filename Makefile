@@ -9,7 +9,8 @@ GB_SRC = gb/z80.cpp \
 	 gb/debug.cpp \
 	 gb/devices.cpp \
 	 gb/joypad.cpp \
-	 gb/rom/mbc1.cpp 
+	 gb/rom/mbc1.cpp \
+	 gb/rom/mbc3.cpp
 
 MAIN_OBJ = $(addprefix obj/,$(MAIN_SRC:.cpp=.o))
 GB_OBJ = $(addprefix obj/, $(GB_SRC:.cpp=.o))

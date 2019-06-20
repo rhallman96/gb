@@ -47,6 +47,11 @@ protected:
      */
     Rom( char* buffer, uint32_t bufferSize, bool ram, bool battery, std::string savePath );
 
+    /**
+     * Sets the RAM size based on the cartridge header.
+     */
+    void setRAMSize( void );
+    
     // the ROM's save file
     std::string m_savePath;
     
@@ -55,6 +60,10 @@ protected:
 
     // whether this is in ROM or RAM mode
     bool m_romMode;
+
+    // external RAM
+    uint8_t* mp_ramArray;
+    int m_ramSize;
     
     // the cartridge data
     char* mp_buffer; uint32_t m_bufferSize;
@@ -68,6 +77,11 @@ protected:
 	C_MBC1                 = 0x01,
 	C_MBC1_RAM             = 0x02,
 	C_MBC1_RAM_BATTERY     = 0x03,
+	C_MBC3                 = 0x11,
+	C_MBC3_RAM             = 0x12,
+	C_MBC3_RAM_BATTERY     = 0x13,
+	C_MBC3_TIM_BATTERY     = 0x0F,
+	C_MBC3_TIM_RAM_BATTERY = 0x10
     } MBCType;
     
     static const uint16_t c_pageSize = 0x4000;

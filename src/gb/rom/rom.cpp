@@ -1,5 +1,6 @@
 #include "rom.h"
 #include "mbc1.h"
+#include "mbc3.h"
 
 #include <iostream>
 #include <fstream>
@@ -10,6 +11,7 @@ Rom::Rom( char* buffer, uint32_t bufferSize, bool ram, bool battery, std::string
       m_ram( ram ),
       m_battery( battery ),
       m_romMode( false ),
+      mp_ramArray( NULL ),
       mp_buffer( buffer ),
       m_bufferSize( bufferSize )
 {
@@ -56,6 +58,21 @@ Rom* Rom::Load( std::string path, std::string savePath )
     case C_MBC1_RAM_BATTERY:
 	rom = new MBC1( buffer, bufferSize, true, true, savePath );
 	break;
+    case C_MBC3:
+	rom = new MBC3( buffer, bufferSize, false, false, false, savePath );
+	break;
+    case C_MBC3_RAM:
+	rom = new MBC3( buffer, bufferSize, true, false, false, savePath );
+	break;
+    case C_MBC3_RAM_BATTERY:
+	rom = new MBC3( buffer, bufferSize, true, true, false, savePath );
+	break;
+    case C_MBC3_TIM_BATTERY:
+	rom = new MBC3( buffer, bufferSize, false, true, true, savePath );
+	break;
+    case C_MBC3_TIM_RAM_BATTERY:
+	rom = new MBC3( buffer, bufferSize, true, true, true, savePath );
+	break;
     default:
 	break;
     }
@@ -70,6 +87,13 @@ Rom::~Rom( void )
 	delete[] mp_buffer;
 	mp_buffer = NULL;
     }
+
+    if( mp_ramArray != NULL )
+    {
+	delete[] mp_ramArray;
+	mp_ramArray = NULL;
+    }
+
 }
 
 void Rom::access( uint16_t addr, uint8_t& data, bool write )
@@ -77,6 +101,37 @@ void Rom::access( uint16_t addr, uint8_t& data, bool write )
     if( write ) { return; }
 
     data = mp_buffer[addr];
+}
+
+void Rom::setRAMSize( void )
+{
+    if( m_ram )
+    {    
+	uint8_t ramType = mp_buffer[0x149];
+        
+	switch( ramType )
+	{
+            case 0x01:
+	        m_ramSize = 0x800;
+		break;
+            case 0x02:
+		m_ramSize = 0x2000;
+	        break;
+            case 0x03:
+		m_ramSize = 0x8000;
+		break;
+	    case 0x04:
+	        m_ramSize = 0x20000;
+	        break;
+            case 0x05:
+		m_ramSize = 0x10000;
+		break;
+            default:
+		return;
+	}
+
+	mp_ramArray = new uint8_t[m_ramSize];
+    }
 }
 
 void Rom::save( void )
