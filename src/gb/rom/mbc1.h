@@ -21,16 +21,9 @@ public:
     MBC1( char* buffer, uint32_t bufferSize, bool ram, bool battery, std::string savePath );
     virtual ~MBC1( void );
     virtual void access( uint16_t addr, uint8_t& data, bool write );
-    virtual void save( void );
     
 private:
 
-    /**
-     * If this cartridge is battery-buffered, try loading 
-     * the save file.
-     */
-    void loadSave( void );
-    
     // the rom and ram bank numbers
     uint8_t m_romBankNum;
     uint8_t m_ramBankNum;

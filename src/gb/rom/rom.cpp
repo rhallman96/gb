@@ -136,4 +136,52 @@ void Rom::setRAMSize( void )
 
 void Rom::save( void )
 {
+    using namespace std;
+    
+    if( !m_battery ) { return; }
+
+    ofstream file( m_savePath, ios::binary );
+    if( file.is_open() )
+    {
+	file.write( (char*)mp_ramArray, m_ramSize );
+	file.close();
+	cout << "Wrote save data to " << m_savePath << endl;
+    }
+    else
+    {
+	cout << "Unable to save battery-backed RAM." << endl;
+    }
+}
+
+void Rom::loadSave( void )
+{
+    using namespace std;
+    
+    if( !m_battery) { return; }
+
+    ifstream file( m_savePath, ios::binary | ios::ate );
+    if( file.is_open() )
+    {
+	unsigned int bufferSize = file.tellg();
+        if( bufferSize != m_ramSize )
+	{
+	    cout << "Invalid save data." << endl;
+	    return;
+	}
+
+	char* buffer;
+	buffer = new char[bufferSize];
+	file.seekg( 0, ios::beg );
+	file.read( buffer, bufferSize );
+	file.close();
+	
+	delete[] mp_ramArray;
+	mp_ramArray = (uint8_t*)buffer;
+
+	cout << "Save data loaded from " << m_savePath << endl;
+    }
+    else
+    {
+	cout << "No save file found." << endl;
+    }
 }

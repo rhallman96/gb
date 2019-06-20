@@ -34,7 +34,7 @@ public:
      * Write game data to the save file, if applicable.
      */
     virtual void save( void );
-    
+
 protected:
 
     /**
@@ -47,6 +47,13 @@ protected:
      */
     Rom( char* buffer, uint32_t bufferSize, bool ram, bool battery, std::string savePath );
 
+    /**
+     * If this cartridge is battery-buffered, try loading 
+     * the save file.
+     */
+    virtual void loadSave( void );
+    
+    
     /**
      * Sets the RAM size based on the cartridge header.
      */

@@ -7,7 +7,7 @@ MBC3::MBC3( char* buffer, uint32_t bufferSize, bool ram, bool battery, bool time
     Rom( buffer, bufferSize, ram, battery, savePath ),
     m_timer( timer ),
     m_romBankNum( 0x01 ),
-    m_ramBankNum( 0x00 )
+    m_ramRtcBankNum( 0x00 )
 {
     this->setRAMSize();
     this->loadSave();
@@ -39,12 +39,18 @@ void MBC3::access( uint16_t addr, uint8_t& data, bool write )
 	}
 	else if( addr < 0xC000 )
 	{
-	    // read from RAM
-	    uint16_t dest = addr - 0xA000;
-	    dest += (m_ramBankNum * 0x2000);
-	    data = mp_ramArray[ dest ];
-
-	    // RTC register
+	    if( m_ramRtcBankNum < 0x04 ) {	    
+		// read from RAM
+		uint16_t dest = addr - 0xA000;
+		dest += (m_ramRtcBankNum * 0x2000);
+		data = mp_ramArray[ dest ];
+	    }
+	    else if( m_timer )
+	    {
+		// RTC register
+		uint8_t num = m_ramRtcBankNum - 0x08;
+		data = m_clockCounterRegs[ num ];
+	    }
 	}
     }
     else
@@ -69,9 +75,7 @@ void MBC3::access( uint16_t addr, uint8_t& data, bool write )
 	else if( addr < 0x6000 )
 	{
 	    // RAM bank num or RTC register select
-	    if( data < 0x08 ) {
-		m_ramBankNum = data;
-	    }
+	    m_ramRtcBankNum = data;
 	}
 	else if( addr < 0x8000 )
 	{
@@ -79,74 +83,19 @@ void MBC3::access( uint16_t addr, uint8_t& data, bool write )
 	}
 	else if( addr < 0xC000 )
 	{
-	    // write to RAM
-	    uint16_t dest = addr - 0xA000;
-	    dest += (m_ramBankNum * 0x2000);
-	    mp_ramArray[ dest ] = data;
-	    
-	    // RTC register
+	    if( m_ramRtcBankNum < 0x04 ) {	    
+		// write to RAM
+		uint16_t dest = addr - 0xA000;
+		dest += (m_ramRtcBankNum * 0x2000);
+		mp_ramArray[ dest ] = data;
+	    }
+	    else if( m_timer )
+	    {
+		// RTC register
+		uint8_t num = m_ramRtcBankNum - 0x08;
+		m_clockCounterRegs[ num ] = data;
+	    }		
 	}
     }
 }
 
-void MBC3::save( void )
-{
-}
-
-void MBC3::loadSave( void )
-{
-    using namespace std;
-    
-    if( !m_battery) { return; }
-
-    ifstream file( m_savePath, ios::binary | ios::ate );
-    if( file.is_open() )
-    {
-	unsigned int bufferSize = file.tellg();
-        if( bufferSize != m_ramSize )
-	{
-	    cout << "Invalid save data." << endl;
-	    return;
-	}
-
-	char* buffer;
-	buffer = new char[bufferSize];
-	file.seekg( 0, ios::beg );
-	file.read( buffer, bufferSize );
-	file.close();
-	
-	delete[] mp_ramArray;
-	mp_ramArray = (uint8_t*)buffer;
-
-	cout << "Save data loaded from " << m_savePath << endl;
-    }
-    else
-    {
-	cout << "No save file found." << endl;
-    }
-}
-
-void MBC3::setRAMSize( void )
-{
-    if( m_ram )
-    {    
-	uint8_t ramType = mp_buffer[0x149];
-        
-	switch( ramType )
-	{
-            case 0x01:
-	        m_ramSize = 0x800;
-		break;
-            case 0x02:
-		m_ramSize = 0x2000;
-	        break;
-            case 0x03:
-		m_ramSize = 0x8000;
-		break;
-            default:
-		return;
-	}
-
-	mp_ramArray = new uint8_t[m_ramSize];
-    }
-}
