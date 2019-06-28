@@ -12,30 +12,44 @@ GB_SRC = emu/gb/z80.cpp \
 	 emu/gb/rom/mbc1.cpp \
 	 emu/gb/rom/mbc3.cpp
 
+LAUNCHER_SRC = launcher/launcher.cpp \
+	       launcher/rom.cpp \
+	       launcher/romlist.cpp \
+	       launcher/toolbar.cpp
+
 MAIN_OBJ = $(addprefix obj/,$(MAIN_SRC:.cpp=.o))
 GB_OBJ = $(addprefix obj/, $(GB_SRC:.cpp=.o))
-
-DEBUG_MODE=false
+LAUNCHER_OBJ = $(addprefix obj/, $(LAUNCHER_SRC:.cpp=.o))
 
 CXX = g++
-CXXFLAGS = -Wall -std=c++11 -g -D DEBUG_MODE=$(DEBUG_MODE)
-SDLFLAGS = $(shell sdl2-config --libs --cflags)
+CXXFLAGS = -Wall -std=c++17 -g $(DEBUG_FLAG)
+SDLLIBS = $(shell sdl2-config --libs)
+SDLFLAGS = $(shell sdl2-config --cflags)
+WXFLAGS = $(shell wx-config --cxxflags)
+WXLIBS = $(shell wx-config --libs)
 
-all: gb
+all: gb launcher
 
 .PHONY: clean
 clean:
 	rm -rf obj
 	rm -f gb
+	rm -f launcher
+	rm -rf save
+	rm -rf roms 
 
 .PHONY: debug
 debug:
-	make 'DEBUG_MODE=true'
+	make 'DEBUG_FLAG=-D DEBUG_MODE=true'
 
 gb: $(MAIN_OBJ) $(GB_OBJ)
-	$(CXX) $(CXXFLAGS) $(DEBUG_OFF) $(SDLFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $(SDLLIBS) $^ -o $@
 
+launcher: $(LAUNCHER_OBJ)
+	$(CXX) $(CXXFLAGS) $(WXLIBS) $^ -o $@
+	mkdir -p roms
+	mkdir -p save
 
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
+	$(CXX) $(CXXFLAGS) $(WXFLAGS) $(SDLFLAGS) -c $^ -o $@

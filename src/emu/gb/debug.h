@@ -1,8 +1,11 @@
 #pragma once
 
+#ifndef DEBUG_MODE
+#define DEBUG_MODE false
+#endif
+
 #include "z80.h"
 #include "bus.h"
-
 
 /**
  * @author Rick Hallman

@@ -3,6 +3,7 @@ This is a Nintendo Game Boy emulator implemented in C++ using SDL for graphics a
 
 ## Dependencies
 + SDL2
++ wxWidgets 3.0 or higher (for the launcher)
 
 ## Build
 In order to build this program, simply cd into the main project folder and type `make`. The executable file will be named `gb`, and can be run like so:
