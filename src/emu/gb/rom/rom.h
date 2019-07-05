@@ -70,7 +70,7 @@ protected:
 
     // external RAM
     uint8_t* mp_ramArray;
-    int m_ramSize;
+    unsigned int m_ramSize;
     
     // the cartridge data
     char* mp_buffer; uint32_t m_bufferSize;
