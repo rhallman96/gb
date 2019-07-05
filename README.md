@@ -1,5 +1,5 @@
 # game boy
-This is a Nintendo Game Boy emulator implemented in C++ using SDL for graphics and keyboard input. This program is currently only compatible with Linux and Mac OSX.
+This is a Nintendo Game Boy emulator implemented in C++ using SDL for graphics and keyboard input. This program is designed for Mac OS and Linux, and is not compatible with Windows.
 
 ## Dependencies
 + SDL2 / SDL2_Image
