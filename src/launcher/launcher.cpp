@@ -14,7 +14,7 @@ wxEND_EVENT_TABLE()
 const string LaunchFrame::c_title = "GBEmu";
 
 LaunchFrame::LaunchFrame( string directory ) :
-    wxFrame( NULL, wxID_ANY, c_title ),
+    wxFrame( NULL, wxID_ANY, c_title, wxDefaultPosition, wxSize( c_width, c_height ) ),
     m_gbPath( directory + Launcher::c_gb ),
     m_keyReaderPath( directory + Launcher::c_keyReader ),
     m_configPath( directory + Launcher::c_config )

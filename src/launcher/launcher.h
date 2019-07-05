@@ -67,6 +67,10 @@ private:
      * Launches the control configuration dialog.
      */
     void setControls( void );
+
+    // the default width and height
+    static const int c_width = 400;
+    static const int c_height = 300;
     
     // layout elements
     ToolBar* mp_toolBar;
