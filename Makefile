@@ -17,9 +17,14 @@ LAUNCHER_SRC = launcher/launcher.cpp \
 	       launcher/romlist.cpp \
 	       launcher/toolbar.cpp
 
+KEYREADER_SRC = keyreader/main.cpp \
+		keyreader/keyreader.cpp \
+		keyreader/config.cpp
+
 MAIN_OBJ = $(addprefix obj/,$(MAIN_SRC:.cpp=.o))
 GB_OBJ = $(addprefix obj/, $(GB_SRC:.cpp=.o))
 LAUNCHER_OBJ = $(addprefix obj/, $(LAUNCHER_SRC:.cpp=.o))
+KEYREADER_OBJ = $(addprefix obj/, $(KEYREADER_SRC:.cpp=.o))
 
 CXX = g++
 CXXFLAGS = -Wall -std=c++17 -g $(DEBUG_FLAG)
@@ -28,27 +33,29 @@ SDLFLAGS = $(shell sdl2-config --cflags)
 WXFLAGS = $(shell wx-config --cxxflags)
 WXLIBS = $(shell wx-config --libs)
 
-all: gb launcher
+all: gb launcher keyreader
 
 .PHONY: clean
 clean:
 	rm -rf obj
 	rm -f gb
 	rm -f launcher
-	rm -rf save
-	rm -rf roms 
+	rm -f keyreader
 
 .PHONY: debug
 debug:
 	make 'DEBUG_FLAG=-D DEBUG_MODE=true'
 
 gb: $(MAIN_OBJ) $(GB_OBJ)
-	$(CXX) $(CXXFLAGS) $(SDLLIBS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(SDLLIBS)
 
 launcher: $(LAUNCHER_OBJ)
-	$(CXX) $(CXXFLAGS) $(WXLIBS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(WXLIBS)
 	mkdir -p roms
 	mkdir -p save
+
+keyreader: $(KEYREADER_OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(SDLLIBS) -lSDL2_image
 
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)

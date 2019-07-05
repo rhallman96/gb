@@ -7,6 +7,7 @@ wxBEGIN_EVENT_TABLE(LaunchFrame, wxFrame)
     EVT_MENU(wxID_EXIT, LaunchFrame::OnExit)
     EVT_LISTBOX_DCLICK( RomList::ID, LaunchFrame::OnRomDoubleClick )
     EVT_TOOL( ToolBar::ID_PLAY, LaunchFrame::OnPlayClicked )
+    EVT_TOOL( ToolBar::ID_CONTROLS, LaunchFrame::OnControlsClicked )
 wxEND_EVENT_TABLE()
 
 // the window's title
@@ -14,7 +15,9 @@ const string LaunchFrame::c_title = "GBEmu";
 
 LaunchFrame::LaunchFrame( string directory ) :
     wxFrame( NULL, wxID_ANY, c_title ),
-    m_gbPath( directory + Launcher::c_gb )
+    m_gbPath( directory + Launcher::c_gb ),
+    m_keyReaderPath( directory + Launcher::c_keyReader ),
+    m_configPath( directory + Launcher::c_config )
 {
     mp_romList = new RomList( this, directory );
     mp_toolBar = new ToolBar( this, directory );
@@ -42,6 +45,11 @@ void LaunchFrame::OnPlayClicked( wxCommandEvent& event )
 {
     Rom* rom = mp_romList->getSelection();
     this->launch( rom );
+}
+
+void LaunchFrame::OnControlsClicked( wxCommandEvent& event )
+{
+    this->setControls();
 }
 
 void LaunchFrame::launch( Rom* rom )
@@ -72,12 +80,41 @@ void LaunchFrame::launch( Rom* rom )
     }
 }
 
+void LaunchFrame::setControls( void )
+{    
+    pid_t pid = fork();
+    
+    if( pid == 0 )
+    {
+	const char* path = m_keyReaderPath.c_str();
+	const char* config = m_configPath.c_str();
+	
+	// child process
+	char* args[3];
+	args[0] = (char*) path;
+	args[1] = (char*) config;
+	args[2] = NULL;
+	
+	execv( path, args );
+    }
+    else if( pid < 0 )
+    {
+	// fork error
+	exit( 1 );
+    }
+}
 
 // set launcher as the app
 wxIMPLEMENT_APP(Launcher);
 
 // gb executable name
 const string Launcher::c_gb = "gb";
+
+// key reader name
+const string Launcher::c_keyReader = "keyreader";
+
+// config file name
+const string Launcher::c_config = "keys.config";
 
 Launcher::Launcher( void ) :
     mp_frame( NULL )

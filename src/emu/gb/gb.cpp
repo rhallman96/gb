@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-GB::GB( Rom* rom )
+GB::GB( Rom* rom, string baseDir )
     : mp_rom( rom ),
       m_counter( 0x0000 )
 {
-    mp_bus = new Bus( rom );    
+    mp_bus = new Bus( rom, baseDir );    
     mp_z80 = new Z80( mp_bus );
     mp_lcd = new LCD( mp_z80, mp_bus );
 

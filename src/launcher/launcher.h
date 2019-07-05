@@ -49,6 +49,12 @@ private:
      * @param event event args
      */
     void OnPlayClicked( wxCommandEvent& event );
+
+    /**
+     * Event handler for the toolbar's controls button.
+     * @param event event args
+     */    
+    void OnControlsClicked( wxCommandEvent& event );
     
     wxDECLARE_EVENT_TABLE();
     
@@ -56,6 +62,11 @@ private:
      * Launches a given ROM.
      */
     void launch( Rom* rom );
+
+    /**
+     * Launches the control configuration dialog.
+     */
+    void setControls( void );
     
     // layout elements
     ToolBar* mp_toolBar;
@@ -63,6 +74,12 @@ private:
     
     // the emulator's path
     string m_gbPath;
+
+    // the key reader's path
+    string m_keyReaderPath;
+
+    // the config file's path
+    string m_configPath;
 };
 
 /**
@@ -78,6 +95,12 @@ public:
 
     // the emulator's name
     static const string c_gb;
+
+    // the key reader's name
+    static const string c_keyReader;
+
+    // the keyboard config file's name
+    static const string c_config;
     
 private:
     

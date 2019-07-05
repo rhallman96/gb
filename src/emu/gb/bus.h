@@ -8,7 +8,11 @@
 #define RES(n,b) (n & (~(0x01 << b)))
 
 #include <list>
+#include <string>
+using std::string;
+
 #include <stdint.h>
+
 
 class DMATransferDevice;
 class Rom;
@@ -26,8 +30,9 @@ public:
     /**
      * Constructor.
      * @param rom the game's ROM file
+     * @param baseDir the program's base directory
      */
-    Bus( Rom* rom );
+    Bus( Rom* rom, string baseDir="" );
     ~Bus( void );
 
     /**

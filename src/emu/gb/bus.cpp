@@ -7,13 +7,13 @@
 #include <iostream>
 #include <list>
 #include <iterator>
+#include <string>
 
 using namespace std;
 
-
-Bus::Bus( Rom* rom ) :
+Bus::Bus( Rom* rom, string baseDir ) :
     mp_rom( rom ),
-    mp_joypad( new JoyPad() )
+    mp_joypad( new JoyPad( baseDir ) )
 {
     mp_dmaReg = new DMATransferDevice( this );
     mp_memory = new uint8_t[65536];
