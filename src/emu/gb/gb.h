@@ -8,6 +8,7 @@
 #include "devices.h"
 
 #include <string>
+using std::string;
 
 /**
  * @author Rick Hallman
@@ -19,8 +20,9 @@ public:
     /**
      * Constructor.
      * @param rom the loaded ROM file
+     * @param baseDir the program's base directory
      */
-    GB( Rom* rom );
+    GB( Rom* rom, string baseDir="" );
     ~GB( void );
 
     /**

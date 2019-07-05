@@ -2,6 +2,9 @@
 
 #include "devices.h"
 
+#include <string>
+using std::string;
+
 /**
  * @author Rick Hallman
  *
@@ -13,8 +16,12 @@ class JoyPad : public ReadOnlyDevice
 public:
 
     static const uint16_t c_addr = 0xFF00;
-    
-    JoyPad( void );
+
+    /**
+     * Constructor.
+     * @param baseDir the program's base directory
+     */
+    JoyPad( string baseDir="" );
     ~JoyPad( void );
 
     virtual void access( uint16_t addr, uint8_t& data, bool write );
@@ -33,6 +40,22 @@ public:
     
 protected:
 
+    // config file
+    static const string c_config;
+
+    /**
+     * Maps a button scancode to a key based on its key value.
+     * @param key the string corresponding to a given key
+     * @param value the button's scancode
+     */
+    void setKeyMapping( string key, int value );
+    
+    /**
+     * Loads user-defined key bindings from keys.config.
+     * @param baseDir the program's base directory
+     */
+    void loadConfigValues( string baseDir );
+    
     /**
      * Sets the button values in the register's least significant
      * nibble.

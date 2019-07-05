@@ -1,17 +1,22 @@
 #include "joypad.h"
 #include "bus.h"
+#include "../../buttons.h"
 
 #include <SDL2/SDL.h>
+#include <iostream>
+#include <fstream>
 
-JoyPad::JoyPad( void ) : ReadOnlyDevice( c_addr, c_addr ),
-			 m_up( false ),
-			 m_down( false ),
-			 m_left( false ),
-			 m_right( false ),
-			 m_a( false ),
-			 m_b( false ),
-			 m_start( false ),
-			 m_select( false )
+const string JoyPad::c_config = "keys.config";
+
+JoyPad::JoyPad( string baseDir ) : ReadOnlyDevice( c_addr, c_addr ),
+				   m_up( false ),
+				   m_down( false ),
+				   m_left( false ),
+				   m_right( false ),
+				   m_a( false ),
+				   m_b( false ),
+				   m_start( false ),
+				   m_select( false )
 {
     // initialize all buttons to unpressed
     mp_memory[0] = 0xFF;
@@ -25,6 +30,9 @@ JoyPad::JoyPad( void ) : ReadOnlyDevice( c_addr, c_addr ),
     m_keyB = SDL_SCANCODE_Z;
     m_keyStart = SDL_SCANCODE_RETURN;
     m_keySelect = SDL_SCANCODE_RSHIFT;
+
+    // load custom key bindings
+    this->loadConfigValues( baseDir );
 }
 
 JoyPad::~JoyPad( void )
@@ -103,7 +111,34 @@ bool JoyPad::stateChanged( void )
     
     return false;
 }
-    
+
+void JoyPad::setKeyMapping( string key, int value )
+{
+    if( key == BTN_START ) { m_keyStart = value; }
+    else if( key == BTN_SELECT ) { m_keySelect = value; }
+    else if( key == BTN_A ) { m_keyA = value; }
+    else if( key == BTN_B ) { m_keyB = value; }
+    else if( key == BTN_UP ) { m_keyUp = value; }
+    else if( key == BTN_DOWN ) { m_keyDown = value; }
+    else if( key == BTN_LEFT ) { m_keyLeft = value; }
+    else if( key == BTN_RIGHT ) { m_keyRight = value; }
+}
+
+void JoyPad::loadConfigValues( string baseDir )
+{
+    using namespace std;
+
+    string key; int value;
+    ifstream file( baseDir + c_config );
+
+    if( file.is_open() == false) { return; }
+
+    while( file >> key >> value )
+    {
+	this->setKeyMapping( key, value );
+    }
+}
+
 void JoyPad::setButtonValues( void )
 {
     uint8_t reg = mp_memory[0];
