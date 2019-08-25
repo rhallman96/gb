@@ -30,10 +30,13 @@ int main( int argc, char* argv[] )
     Rom* rom = Rom::Load( path, save );
     if( rom == NULL ) { return 1; }
 
+    // initialize SDL
+    SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO );
+    
     // get the program's base directory (for config files)
     string baseDir = getBaseDir( argv[0] );
 
-    // start the emulator
+    //  start the emulator
     GB* gb = new GB( rom, baseDir );
     Window* window = new Window( gb );
     window->run();

@@ -13,11 +13,11 @@ using std::string;
 
 #include <stdint.h>
 
-
 class DMATransferDevice;
 class Rom;
 class JoyPad;
 class Audio;
+class Mixer;
 
 /**
  * @author Rick Hallman
@@ -30,9 +30,10 @@ public:
     /**
      * Constructor.
      * @param rom the game's ROM file
+     * @param mixer the audio mixer
      * @param baseDir the program's base directory
      */
-    Bus( Rom* rom, string baseDir="" );
+    Bus( Rom* rom, Mixer* mixer, string baseDir="" );
     ~Bus( void );
 
     /**
@@ -68,6 +69,9 @@ private:
     // ROM file
     Rom* mp_rom;
 
+    // audio mixer
+    Mixer* mp_mixer;
+    
     // Joypad
     JoyPad* mp_joypad;
 
@@ -76,5 +80,4 @@ private:
 
     // DMA Transfer Device
     DMATransferDevice* mp_dmaReg;
-
 };

@@ -76,13 +76,13 @@ void Z80::printStatus( void )
 
 uint8_t Z80::executeNextInstruction( void )
 {
-    using std::cout;
-    using std::hex;
-    using std::endl;
-
     uint8_t ticks = 4;
     uint8_t opcode = 0x00;
 
+    using std::cout;
+    using std::hex;
+    using std::endl;
+    
     // only fetch next instruction if not halting
     if( m_halting == false ) { opcode = this->fetchNextInstruction(); }
     else
@@ -478,7 +478,7 @@ uint8_t Z80::executeNextInstruction( void )
 	    ticks = this->rst( 0x38 );
 	    break;
 	case 0x00: // NOP
-	default: 
+	default:
 	    break;
 	}
     }
@@ -1951,7 +1951,7 @@ uint8_t Z80::bit( uint8_t& reg, uint8_t bit, bool hl )
 
 	zero = !BIT( val, bit );
 	
-	ticks = 16;
+	ticks = 12;
     }
     else
     {

@@ -24,7 +24,7 @@ public:
     JoyPad( string baseDir="" );
     ~JoyPad( void );
 
-    virtual void access( uint16_t addr, uint8_t& data, bool write );
+    void access( uint16_t addr, uint8_t& data, bool write );
 
     /**
      * Update and parse SDL keyboard input.

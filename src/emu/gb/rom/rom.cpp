@@ -37,7 +37,7 @@ Rom* Rom::Load( std::string path, std::string savePath )
     uint8_t type = buffer[0x147];
 
     Rom* rom = NULL;
-    
+
     switch( type )
     {
     case C_ROM_ONLY:
@@ -108,7 +108,7 @@ void Rom::setRAMSize( void )
     if( m_ram )
     {    
 	uint8_t ramType = mp_buffer[0x149];
-        
+
 	switch( ramType )
 	{
             case 0x01:
@@ -127,6 +127,7 @@ void Rom::setRAMSize( void )
 		m_ramSize = 0x10000;
 		break;
             default:
+		m_ramSize = 0;
 		return;
 	}
 

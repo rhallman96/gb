@@ -10,7 +10,12 @@ GB_SRC = emu/gb/z80.cpp \
 	 emu/gb/devices.cpp \
 	 emu/gb/joypad.cpp \
 	 emu/gb/rom/mbc1.cpp \
-	 emu/gb/rom/mbc3.cpp
+	 emu/gb/rom/mbc3.cpp \
+	 emu/gb/audio/mixer.cpp \
+	 emu/gb/audio/channel.cpp \
+	 emu/gb/audio/square.cpp \
+	 emu/gb/audio/noise.cpp \
+	 emu/gb/audio/wave.cpp
 
 LAUNCHER_SRC = launcher/launcher.cpp \
 	       launcher/rom.cpp \
@@ -27,7 +32,7 @@ LAUNCHER_OBJ = $(addprefix obj/, $(LAUNCHER_SRC:.cpp=.o))
 KEYREADER_OBJ = $(addprefix obj/, $(KEYREADER_SRC:.cpp=.o))
 
 CXX = g++
-CXXFLAGS = -Wall -std=c++17 -g $(DEBUG_FLAG)
+CXXFLAGS = -Wall -std=c++17 -g
 SDLLIBS = $(shell sdl2-config --libs)
 SDLFLAGS = $(shell sdl2-config --cflags)
 WXFLAGS = $(shell wx-config --cxxflags)
@@ -42,9 +47,8 @@ clean:
 	rm -f launcher
 	rm -f keyreader
 
-.PHONY: debug
-debug:
-	make 'DEBUG_FLAG=-D DEBUG_MODE=true'
+debug: CXXFLAGS += -DDEBUG
+debug: gb launcher keyreader
 
 gb: $(MAIN_OBJ) $(GB_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(SDLLIBS)

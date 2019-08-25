@@ -435,4 +435,3 @@ void LCD::setMode( uint8_t& stat, uint8_t mode )
     stat = RES( stat, 1 );
     stat = stat | mode;
 }
-

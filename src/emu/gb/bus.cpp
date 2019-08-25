@@ -3,6 +3,7 @@
 #include "devices.h"
 #include "joypad.h"
 #include "rom/rom.h"
+#include "audio/mixer.h"
 
 #include <iostream>
 #include <list>
@@ -11,8 +12,9 @@
 
 using namespace std;
 
-Bus::Bus( Rom* rom, string baseDir ) :
+Bus::Bus( Rom* rom, Mixer* mixer, string baseDir ) :
     mp_rom( rom ),
+    mp_mixer( mixer ),
     mp_joypad( new JoyPad( baseDir ) )
 {
     mp_dmaReg = new DMATransferDevice( this );
@@ -49,6 +51,11 @@ void Bus::access( uint16_t addr, uint8_t& data, bool write )
     {
 	// DMA transfer
 	mp_dmaReg->access( addr, data, write );
+    }
+    else if( ( addr >= Mixer::c_start ) && ( addr <= Mixer::c_end ) )
+    {
+	// audio mixer access
+	mp_mixer->access( addr, data, write );
     }
     else if( ( (addr == 0xFF44) || (addr == 0xFF04) )
 	     && write )

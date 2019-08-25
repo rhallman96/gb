@@ -28,7 +28,7 @@ public:
     void run( void );
     
 private:
-
+    
     /**
      * Renders the contents of the window.
      */
@@ -42,10 +42,6 @@ private:
 
     // the logical portion of the emulator
     GB* mp_gb;
-
-    // delay variables
-    static const Uint32 c_delay = (1020 / 60);
-    Uint32 m_prevTicks;
     
     // SDL objects
     SDL_Window* mp_window;

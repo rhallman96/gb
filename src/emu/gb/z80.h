@@ -15,6 +15,9 @@ class Z80
 {
 public:
 
+    // the processor's clock speed
+    static const int c_clockSpeed = 4194304;
+    
     /**
      * Constructor.
      * @param bus a reference to the device's bus

@@ -6,6 +6,7 @@
 #include "lcd.h"
 #include "debug.h"
 #include "devices.h"
+#include "audio/mixer.h"
 
 #include <string>
 using std::string;
@@ -31,12 +32,12 @@ public:
      * @return 0, or 1 if exiting
      */
     uint8_t update( void );
-
+    
     /**
      * Called to close and save off external RAM.
      */
     void close( void );
-    
+
     /**
      * Gets the number of ticks performed by this device.
      * @return the number of ticks taken so far
@@ -78,9 +79,10 @@ private:
     Bus* mp_bus;
     LCD* mp_lcd;
     Z80* mp_z80;
-
+    Mixer* mp_mixer;
+    
     // the cpu counter
-    int m_counter;
+    unsigned long m_counter;
     
 };
 

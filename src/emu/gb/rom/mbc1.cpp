@@ -34,7 +34,7 @@ void MBC1::access( uint16_t addr, uint8_t& data, bool write )
 	    data = mp_buffer[romAddr];
 	}
 	else if( m_ram && m_ramEnabled )
-	{
+	{   
 	    // read from RAM
 	    uint16_t dest = addr - 0xA000;
 	    dest += (m_ramBankNum * 0x2000);
@@ -47,7 +47,7 @@ void MBC1::access( uint16_t addr, uint8_t& data, bool write )
 	{
 	    // enable / disable external RAM
 	    if( (data & 0x0F) == 0x0A ) {
-		m_ramEnabled = true;
+		m_ramEnabled = ( m_ramSize > 0 ) ;
 	    }
 	    else {
 		m_ramEnabled = false;

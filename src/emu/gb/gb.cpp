@@ -7,10 +7,11 @@ GB::GB( Rom* rom, string baseDir )
     : mp_rom( rom ),
       m_counter( 0x0000 )
 {
-    mp_bus = new Bus( rom, baseDir );    
+    mp_mixer = new Mixer();
+    mp_bus = new Bus( rom, mp_mixer, baseDir );    
     mp_z80 = new Z80( mp_bus );
     mp_lcd = new LCD( mp_z80, mp_bus );
-
+    
     // initialize debugger
     mp_debug = new Debug( mp_z80, mp_bus );
 }
@@ -20,6 +21,7 @@ GB::~GB( void )
     delete mp_z80; mp_z80 = NULL;
     delete mp_bus; mp_bus = NULL;    
     delete mp_lcd; mp_lcd = NULL;
+    delete mp_mixer; mp_mixer = NULL;
     delete mp_debug; mp_debug = NULL;
 }
 
@@ -55,7 +57,7 @@ void GB::updateHardware( uint8_t ticks )
 {
     this->updateTimers( ticks );
     mp_lcd->update( ticks );
-
+    mp_mixer->update( ticks );
     if( mp_bus->getJoyPad()->stateChanged() )
     {
 	mp_z80->triggerInterrupt( Z80::c_joypad );
@@ -66,8 +68,8 @@ void GB::updateHardware( uint8_t ticks )
 
 void GB::updateTimers( uint8_t ticks )
 {
-    uint32_t prev = m_counter;
-    uint32_t curr = m_counter + ticks;
+    unsigned long prev = m_counter;
+    unsigned long curr = m_counter + ticks;
     
     if( (prev / 256) < (curr / 256) )
     {
@@ -101,10 +103,10 @@ void GB::updateTimers( uint8_t ticks )
 	    break;
 	}
 
-        if( (prev / t) < (curr / t) )
+	if( (prev / t) < (curr / t) )
 	{
-	    tima++;
-
+	    tima += (uint8_t)( (curr / (long)t) - (prev / (long)t) );
+	
 	    // trigger timer interrupt if overflow
 	    if( tima == 0x00 )
 	    {
@@ -113,7 +115,7 @@ void GB::updateTimers( uint8_t ticks )
 	    }
 
 	    mp_bus->defaultAccess( 0xFF05, tima, WRITE );
-	}
+	}	
     }
 }
 

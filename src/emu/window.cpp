@@ -3,16 +3,12 @@
 
 Window::Window( GB* gb )
     : mp_gb( gb )
-{
-    SDL_Init( SDL_INIT_VIDEO );
-    
+{    
     SDL_CreateWindowAndRenderer( c_width, c_height,
 				 SDL_WINDOW_RESIZABLE,
 				 &mp_window,
 				 &mp_renderer );
     SDL_RenderSetLogicalSize( mp_renderer, c_logWidth, c_logHeight );
-
-    m_prevTicks = SDL_GetTicks();
 }
 
 void Window::run( void )
@@ -22,29 +18,27 @@ void Window::run( void )
 
     while( done == false )
     {
-	// Update the emulator
-	if( mp_gb->update() != 0 ) { done = true; }
+	bool draw = false;
 	
-	// Draw the screen if LCD is ready
 	if( mp_gb->getLCD()->readyToDraw() )
 	{
+	    draw = true;
+	    
 	    // Poll window events
 	    while( SDL_PollEvent( &e ) )
 	    {
 		if( e.type == SDL_QUIT ) { done = true; }
 	    }
 
-	    // Render to the screen
-	    this->render();
-
 	    // Update the joypad based on keyboard input
 	    mp_gb->getJoyPad()->readKeyboard();
+        }
+	
+	// Update the emulator
+	if( mp_gb->update() != 0 ) { done = true; }
 
-	    // Delay accordingly
-	    Uint32 delta = SDL_GetTicks() - m_prevTicks;
-	    m_prevTicks += delta;
-	    if( delta < c_delay ) { SDL_Delay( c_delay - delta ); }
-	}
+	// Draw ( if ready )
+	if( draw ) { this->render(); }
     }
 
     mp_gb->close();
