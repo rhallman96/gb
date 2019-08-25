@@ -1,7 +1,9 @@
 #pragma once
 
-#ifndef DEBUG_MODE
+#ifndef DEBUG
 #define DEBUG_MODE false
+#else
+#define DEBUG_MODE true
 #endif
 
 #include "z80.h"
